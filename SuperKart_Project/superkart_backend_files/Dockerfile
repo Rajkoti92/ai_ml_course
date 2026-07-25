@@ -1,5 +1,7 @@
-# Use a minimal base image with Python 3.9 installed
-FROM python:3.9-slim
+# Use a minimal base image with Python 3.11 installed
+# (the pinned numpy/scikit-learn versions require Python >= 3.10,
+#  and the model was serialized under Python 3.11)
+FROM python:3.11-slim
 
 # Set the working directory inside the container
 WORKDIR /app
