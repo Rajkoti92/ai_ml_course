@@ -40,6 +40,10 @@ def predict_sales_batch():
     file = request.files["file"]
     input_df = pd.read_csv(file)
 
+    # Drop the target column if the uploaded file contains it (e.g., the raw SuperKart.csv)
+    if "Product_Store_Sales_Total" in input_df.columns:
+        input_df = input_df.drop(columns=["Product_Store_Sales_Total"])
+
     # Apply the same feature engineering used during training, if raw columns are present
     if "Product_Sugar_Content" in input_df.columns:
         input_df["Product_Sugar_Content"] = input_df["Product_Sugar_Content"].replace({"reg": "Regular"})

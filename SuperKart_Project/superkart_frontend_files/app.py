@@ -1,11 +1,21 @@
-import streamlit as st
+import os
+
 import pandas as pd
 import requests
+import streamlit as st
 
-# Backend API base URL - replace <username> with your Hugging Face username after deploying the backend
-API_BASE = "https://<username>-superkart-sales-backend.hf.space"
+# Backend API base URL.
+# Priority: the SUPERKART_API_URL environment variable, then the value entered in the sidebar.
+# On GitHub Codespaces the backend's forwarded URL looks like:
+#   https://<codespace-name>-7860.app.github.dev
+DEFAULT_API_BASE = os.environ.get("SUPERKART_API_URL", "https://<codespace-name>-7860.app.github.dev")
 
 st.set_page_config(page_title="SuperKart Sales Predictor", page_icon="🛒", layout="centered")
+
+# Sidebar: lets you paste the backend's forwarded URL without editing code
+st.sidebar.header("Backend Settings")
+API_BASE = st.sidebar.text_input("Backend API URL", value=DEFAULT_API_BASE).rstrip("/")
+
 st.title("🛒 SuperKart Sales Prediction App")
 st.write(
     "Forecast the quarterly sales revenue of a product in a SuperKart outlet. "
@@ -58,7 +68,10 @@ if st.button("Predict Sales", type="primary"):
         else:
             st.error(f"API error (status {response.status_code}). Please check the backend service.")
     except requests.exceptions.RequestException:
-        st.error("Could not reach the prediction API. Verify the backend URL and that the Space is running.")
+        st.error(
+            "Could not reach the prediction API. Verify the backend URL in the sidebar, that the "
+            "backend container is running, and that port 7860 is set to Public in the Ports tab."
+        )
 
 # ---------------- Batch prediction ----------------
 st.subheader("Batch Prediction")
@@ -81,4 +94,7 @@ if file is not None and st.button("Predict for Batch", type="primary"):
         else:
             st.error(f"API error (status {response.status_code}). Please check the backend service.")
     except requests.exceptions.RequestException:
-        st.error("Could not reach the prediction API. Verify the backend URL and that the Space is running.")
+        st.error(
+            "Could not reach the prediction API. Verify the backend URL in the sidebar, that the "
+            "backend container is running, and that port 7860 is set to Public in the Ports tab."
+        )
