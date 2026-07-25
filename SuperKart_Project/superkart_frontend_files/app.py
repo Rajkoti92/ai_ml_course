@@ -83,8 +83,8 @@ if file is not None and st.button("Predict for Batch", type="primary"):
         response = requests.post(f"{API_BASE}/v1/predictbatch", files={"file": (file.name, file, "text/csv")}, timeout=120)
         if response.status_code == 200:
             results = pd.DataFrame(response.json())
-            st.write("Predictions:")
-            st.dataframe(results)
+            st.write(f"Predictions for {len(results):,} rows (showing the first 50; download the full file below):")
+            st.dataframe(results.head(50))
             st.download_button(
                 "Download predictions as CSV",
                 results.to_csv(index=False).encode("utf-8"),
